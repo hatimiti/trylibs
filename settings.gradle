@@ -1,4 +1,5 @@
 rootProject.name = "trylibs"
 
 include "JavaCC"
+include "Immutables"
 
