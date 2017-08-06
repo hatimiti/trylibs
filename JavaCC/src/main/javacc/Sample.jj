@@ -1,0 +1,30 @@
+PARSER_BEGIN(Sample)
+package com.github.hatimiti.trylibs.javacc;
+
+public class Sample {
+}
+PARSER_END(Sample)
+
+SKIP:{
+     <SPACE: " "|"\t">
+}
+
+TOKEN:{
+     <NUMBER:(["0"-"9"])+>
+    |<NL:"\n">
+    |<ADDOP:"+">
+}
+
+void list(): {Integer value;}
+{
+  (value=expression()<NL>  {System.out.println(value);}
+  )*
+}
+
+Integer expression():{int result;Token tokenNum;}
+{
+  tokenNum=<NUMBER>    {result=Integer.parseInt(tokenNum.image);}
+  (<ADDOP> tokenNum=<NUMBER>
+           {result+=Integer.parseInt(tokenNum.image);}
+  )*       {return new Integer(result);}
+}

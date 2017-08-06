@@ -1,0 +1,71 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+  dependencies {
+  }
+}
+
+plugins {
+  // https://github.com/johnmartel/javaccPlugin
+  id 'ca.coglinc.javacc' version '2.4.0'
+}
+
+allprojects {
+  apply plugin: 'java'
+  apply plugin: 'application'
+
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+
+  mainClassName = ''
+}
+
+configure(allprojects) { project ->
+  compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.encoding = 'UTF-8'
+  }
+  compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.encoding = 'UTF-8'
+  }
+}
+
+project("JavaCC") {
+  dependencies {
+    compile group: 'net.java.dev.javacc', name: 'javacc', version: '7.0.2'
+  }
+  compileJjtree {
+      inputDirectory = file('src/main/javacc')
+      outputDirectory = file('src/main/generated/javacc')
+      arguments = [grammar_encoding: 'UTF-8', static: 'false']
+  }
+  compileJavacc {
+      inputDirectory = file('src/main/javacc')
+      outputDirectory = file('src/main/generated/javacc')
+      arguments = [grammar_encoding: 'UTF-8', static: 'false']
+  }
+  task cleanGeneratedFiles(type: Delete) {
+      delete file("src/main/generated")
+  }
+  clean.dependsOn cleanGeneratedFiles
+  sourceSets {
+      main {
+          java {
+              srcDir compileJjtree.outputDirectory
+              srcDir compileJavacc.outputDirectory
+          }
+      }
+  }
+  task runJavaCC(type: JavaExec) {
+      main = 'com.github.hatimiti.trylibs.javacc.Main'
+      classpath = sourceSets.main.runtimeClasspath
+  }
+}
+
