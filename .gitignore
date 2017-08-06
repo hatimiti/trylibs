@@ -1,2 +1,5 @@
 /build
 **/build
+/.gradle
+
+JavaCC/src/main/generated
