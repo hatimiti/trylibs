@@ -8,8 +8,10 @@ buildscript {
 }
 
 plugins {
-  // https://github.com/johnmartel/javaccPlugin
+  // for JavaCC https://github.com/johnmartel/javaccPlugin
   id 'ca.coglinc.javacc' version '2.4.0'
+  // for Lombok https://github.com/franzbecker/gradle-lombok
+  id 'io.franzbecker.gradle-lombok' version '1.10'
 }
 
 allprojects {
@@ -85,12 +87,28 @@ project("JavaCC") {
   }
 }
 
+// http://immutables.github.io/immutable.html
 project("Immutables") {
   dependencies {
     provided group: 'org.immutables', name: 'value', version: '2.5.6'
   }
   task runImmutables(type: JavaExec) {
       main = 'com.github.hatimiti.trylibs.immutables.Main'
+      classpath = sourceSets.main.runtimeClasspath
+  }
+}
+
+// https://projectlombok.org/
+project("Lombok") {
+  dependencies {
+    provided group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
+  }
+  lombok {
+    version = '1.16.18'
+    sha256 = ""
+  }
+  task runLombok(type: JavaExec) {
+      main = 'com.github.hatimiti.trylibs.lombok.Main'
       classpath = sourceSets.main.runtimeClasspath
   }
 }
